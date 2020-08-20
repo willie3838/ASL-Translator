@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <video id="video" style = "width: 640px; height: 480px;"></video>
+        <canvas id="canvas"></canvas>   
+        <button id="button" >Take a photo</button>
+
+        <script src="./app.js"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js"></script>
+        <script>
+            // can make more efficient later
+            window.onload = loadVideo();
+            var data;
+            button.onclick = function(){
+                canvas.getContext("2d").drawImage(video,0,0,50,50);
+                preprocessData();
+            };
+
+            function preprocessData(){
+                data = canvas.getContext("2d").getImageData(0,0, 50, 50);
+                console.log(typeof data);
+            }
+
+            (async function(){
+                const model = await tf.loadLayersModel('http://127.0.0.1:81/Models/model.json');
+                
+                data = canvas.getContext("2d").getImageData(0,0, 50, 50);
+                data = data.data;
+                var arr = [data.length];
+              
+                // graysacle
+                for (var i = 0; i < data.length; i += 4) {
+                var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    data[i]     = avg; // red
+                    data[i + 1] = avg; // green
+                    data[i + 2] = avg; // blue
+                }
+
+                // for(var i = 0; i < data.length; i++){
+                //     arr[i] = data[i];
+                // }
+                //console.log(arr);
+                //data = tf.browser.fromPixels(data);
+                //console.log(data);
+                
+                // test = nj.array([1,1,1,1]);
+                // console.log(test.shape);
+                // test = test.reshape(2,2);
+                // console.log(test.shape);
+                data = nj.array(data);
+                // // data = data.reshape(1000,1);
+    
+                console.log(data.shape);
+                
+            
+               
+                
+                if (typeof data === "object"){
+                    //console.log(model.predict(tf.browser.fromPixels(data)));
+                }
+
+            })();
+            
+        </script>    
+
+    </body>
+    
+</html>

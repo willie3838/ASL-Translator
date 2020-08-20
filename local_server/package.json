@@ -1,0 +1,8 @@
+{
+    "name": "asl-translator",
+    "version": "1.0.0",
+    "dependencies": {
+        "@tensorflow/tfjs": "^2.3.0",
+        "express": "latest"
+    }
+}
