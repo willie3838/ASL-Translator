@@ -15,55 +15,72 @@
             // can make more efficient later
             window.onload = loadVideo();
             var data;
+            var image = new Image();
+            image.src = "/A1.jpg";
             button.onclick = function(){
-                canvas.getContext("2d").drawImage(video,0,0,50,50);
+                canvas.getContext("2d").drawImage(image,0,0,64,64);
                 preprocessData();
             };
 
-            function preprocessData(){
-                data = canvas.getContext("2d").getImageData(0,0, 50, 50);
-                console.log(typeof data);
-            }
+       
 
-            (async function(){
+            async function preprocessData(){
                 const model = await tf.loadLayersModel('http://127.0.0.1:81/Models/model.json');
-                
-                data = canvas.getContext("2d").getImageData(0,0, 50, 50);
-                data = data.data;
-                var arr = [data.length];
-              
-                // graysacle
-                for (var i = 0; i < data.length; i += 4) {
-                var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i]     = avg; // red
-                    data[i + 1] = avg; // green
-                    data[i + 2] = avg; // blue
-                }
+                labels = new Map();
+                labels.set(0, "A");
+                labels.set(1, "B");
+                labels.set(2, "C");
+                labels.set(3, "D");
+                labels.set(4, "E");
+                labels.set(5, "F");
+                labels.set(6, "G");
+                labels.set(7, "H");
+                labels.set(8, "I");
+                labels.set(9, "J");
+                labels.set(10, "K");
+                labels.set(11, "L");
+                labels.set(12, "M");
+                labels.set(13, "N");
+                labels.set(14, "O");
+                labels.set(15, "P");
+                labels.set(16, "Q");
+                labels.set(17, "R");
+                labels.set(18, "S");
+                labels.set(19, "T");
+                labels.set(20, "U");
+                labels.set(21, "V");
+                labels.set(22, "W");
+                labels.set(23, "X");
+                labels.set(24, "Y");
+                labels.set(25, "X");
+                labels.set(26, " ");
+                labels.set(27, "delete");
+                labels.set(28, "");
 
-                // for(var i = 0; i < data.length; i++){
-                //     arr[i] = data[i];
+
+                data_image = canvas.getContext("2d").getImageData(0,0, 64, 64);
+                data = data_image.data;
+
+                // for (var i = 0; i < data.length; i += 4) {
+                // var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                //     data[i]     = avg; // red
+                //     data[i + 1] = avg; // green
+                //     data[i + 2] = avg; // blue
                 // }
-                //console.log(arr);
-                //data = tf.browser.fromPixels(data);
-                //console.log(data);
-                
-                // test = nj.array([1,1,1,1]);
-                // console.log(test.shape);
-                // test = test.reshape(2,2);
-                // console.log(test.shape);
-                data = nj.array(data);
-                // // data = data.reshape(1000,1);
-    
-                console.log(data.shape);
-                
+                const uint8array = new Uint8Array(data_image.data.buffer)
+                const rgbaTens4d = tf.tensor4d(uint8array, [1,64, 64, 4])
+                const rgbTens4d= tf.slice4d(rgbaTens4d, [0, 0, 0,0], [-1, -1, -1,3])
             
-               
                 
+                console.log(rgbTens4d)
+                
+               
                 if (typeof data === "object"){
-                    //console.log(model.predict(tf.browser.fromPixels(data)));
+                    result = model.predict(rgbTens4d).argMax(-1).dataSync()[0]
+                    console.log(labels.get(result));
                 }
 
-            })();
+            };
             
         </script>    
 

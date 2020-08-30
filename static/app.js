@@ -3,8 +3,8 @@ var button = document.getElementById("button");
 var canvas = document.querySelector("#canvas");
 var video = document.getElementById("video");
 
-canvas.width = 640;
-canvas.height = 480;
+canvas.width = 500;
+canvas.height = 500;
 
 
 var directory = "/Users/williamchan/Documents/side_projects/ASL/Data/asl_data/asl_alphabet_train/asl_alphabet_train"
